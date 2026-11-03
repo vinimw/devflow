@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
-import { readProjectSettings, systemGh, DEVFLOW_STATUSES } from './project-v2.mjs';
+import { readProjectSettings, systemGh, DEVFLOW_STATUSES, syncIssue } from './project-v2.mjs';
 
 const PRIORITIES = ['P0', 'P1', 'P2', 'P3'];
 const AREAS = ['web', 'api', 'shared', 'infra', 'docs'];
@@ -180,7 +180,8 @@ export function createTask({cwd=process.cwd(),title,bodyFile,priority='P2',area=
   if (!bodyFile || !existsSync(resolve(cwd,bodyFile))) throw new Error('Provide an existing --body-file');
   const body = readFileSync(resolve(cwd,bodyFile),'utf8');
   validateTaskBody(body);
-  const listed = collection(ghCall(gh,['issue','list','--repo',settings.repo,'--state','all','--limit','1000','--json','number,title']), 'issues');
+  const listed = ghCall(gh,['issue','list','--repo',settings.repo,'--state','all','--limit','1000','--json','number,title']);
+  if (!Array.isArray(listed)) throw new Error('Unexpected issue listing from GitHub');
   if (listed.length >= 1000) throw new Error('1,000+ issues; duplicate scan incomplete');
   if (listed.some((item) => item.title.trim().toLowerCase() === title.trim().toLowerCase())) throw new Error('An issue with this title already exists');
   const result = {repo:settings.repo,title,priority,area,type,apply,action:'create-issue-in-backlog'};
@@ -191,8 +192,13 @@ export function createTask({cwd=process.cwd(),title,bodyFile,priority='P2',area=
     if (!match) throw new Error('Issue was created but URL could not be parsed; inspect GitHub before retrying');
     result.number = Number(match[1]);
     result.url = url;
-    if (sync) sync({cwd,issue:result.number,apply:true},gh,()=>{});
-    else result.boardSync = 'pending: run devflow github sync --issue '+result.number+' --apply';
+    try {
+      (sync ?? syncIssue)({cwd,issue:result.number,apply:true},gh,()=>{});
+      result.boardSync = 'Backlog';
+    } catch (error) {
+      result.boardSync = 'failed: ' + error.message;
+      result.recovery = 'Issue already created; run devflow github sync --issue '+result.number+' --apply';
+    }
   }
   output(result);
   return result;
