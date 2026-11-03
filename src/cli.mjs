@@ -1,6 +1,7 @@
 import { uninstallMain } from './uninstall-global.mjs';
 import { installMain } from './install-global.mjs';
 import { shortcutMain } from './shortcuts.mjs';
+import { mergeMain } from './merge.mjs';
 import { agentMain } from './agent.mjs';
 import { taskMain } from './tasks.mjs';
 import { projectMain } from './project-v2.mjs';
@@ -163,6 +164,7 @@ function help() {
   log('  devflow config [--cwd DIR] [--repo OWNER/REPO] [--project-number N] [--apply]');
   log('  devflow project [--cwd DIR] [--apply]');
   log('  devflow next [--cwd DIR] [--apply]');
+  log('  devflow merge [--dry-run] [--cwd DIR]  # check and merge eligible open PRs');
   log('  devflow init [--cwd DIR] [--name NAME] [--repo OWNER/REPO] [--project-number N] [--ui-locale pt-BR] [--apply] [--force]');
   log('  devflow doctor [--cwd DIR] [--json]');
   log('  devflow github plan [--cwd DIR]');
@@ -174,7 +176,7 @@ function help() {
   log('  devflow task create --title TITLE --body-file FILE --priority P2 --area web --type feature [--apply]');
   log('  devflow task next [--apply]');
   log('  devflow task branch --issue N [--apply]');
-  log('  devflow task pr --issue N [--apply]   # draft PR, never pushes');
+  log('  devflow task pr --issue N [--apply]   # ready-for-review PR, never pushes');
   log('  devflow task review --issue N --pr P [--apply]');
   log('  devflow task complete --issue N --pr P [--apply]');
   log('  devflow agent preflight [--provider codex|claude]');
@@ -186,6 +188,7 @@ export async function main(argv) {
   if (argv[0] === 'uninstall') return uninstallMain(argv.slice(1));
   if (argv[0] === 'install') return installMain(argv.slice(1));
   if (['config','project','next'].includes(argv[0])) return shortcutMain(argv);
+  if (argv[0] === 'merge') return mergeMain(argv.slice(1));
   if (argv[0] === 'agent') return agentMain(argv.slice(1));
   if (argv[0] === 'task') return taskMain(argv.slice(1));
   if (argv[0] === 'github' && (argv[1] === 'project' || argv[1] === 'sync')) {

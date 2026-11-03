@@ -69,6 +69,12 @@ node /path/to/devflow/bin/devflow.mjs github setup --cwd /path/to/project --appl
 
 This only creates missing repository labels (15 default labels) using `gh api`. It does not modify existing label colors/descriptions or create/manage Projects V2. Verify your GitHub permissions and the `.devflow.yaml` repository before applying.
 
+## Merge open pull requests
+
+In a repository configured with `.devflow.yaml`, execute `devflow merge` to immediately attempt one safe sweep of currently open PRs into its verified default branch. It processes PRs in ascending number order, only merging non-Draft PRs with completed successful CI, satisfied review restrictions, verified head SHA and clean merge status. GitHub branch protections remain authoritative. Conflicting, failing, pending and unknown PRs remain open. Run `devflow merge --dry-run` to preview without writes.
+
+The CLI never tries to resolve semantic Git conflicts by itself. When used through the DevFlow skill in Claude/Codex, the agent can safely resolve conflicts in isolated worktrees, run validation, and non-force push an update to the PR branch. Updated conflict PRs are **not merged during the current invocation**; rerun `devflow merge` after CI. No daemon or polling loop is created.
+
 ## Security and scope
 
 - Commands never run source code from task issue bodies.

@@ -217,7 +217,18 @@ The agent selects the highest-priority eligible Ready issue, checks safety and s
 
 For installation and the complete CLI reference, continue with the sections below.
 
-## 1. Prerequisites
+## Merge open pull requests
+
+Run `devflow merge` from a configured repository in Claude Code or Codex to process eligible open PRs targeting the default branch. The command makes a **single immediate pass**: PRs with passing checks, appropriate review status, verified mergeability and no conflicts can merge into main. Pending/failed CI, Draft PRs, requested reviews and unknown states remain open; run the command again later.
+
+When conflicts are found, the CLI reports them instead of changing your files. The interactive Claude/Codex agent follows `skills/devflow/references/merge.md`: resolve only safe, understood conflicts in isolated worktrees, run validations and push a verified non-force fix to the PR branch. **That PR must remain open until the next `devflow merge` invocation**, giving CI time to run. Do not bypass branch protection or force-push.
+
+```bash
+devflow merge --dry-run  # preview eligible PRs, no writes
+devflow merge            # merge eligible PRs now; report blockers and conflicts
+```
+
+### 1. Prerequisites
 
 For macOS, Linux, or Windows with a suitable shell:
 
