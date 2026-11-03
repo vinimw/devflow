@@ -1,3 +1,4 @@
+import { installMain } from './install-global.mjs';
 import { shortcutMain } from './shortcuts.mjs';
 import { agentMain } from './agent.mjs';
 import { taskMain } from './tasks.mjs';
@@ -155,7 +156,8 @@ export function githubPlan(options = {}) {
   return plan;
 }
 function help() {
-  log('DevFlow v0.7 — reusable AI project workflow');
+  log('DevFlow v0.8 — reusable AI project workflow');
+  log('  devflow install global [--apply] [--skip-shell]  # safe one-time Mac/Linux bootstrap');
   log('  devflow config [--cwd DIR] [--repo OWNER/REPO] [--project-number N] [--apply]');
   log('  devflow project [--cwd DIR] [--apply]');
   log('  devflow next [--cwd DIR] [--apply]');
@@ -179,6 +181,7 @@ function help() {
   log('Agent commands prepare files only. They never invoke AI, use credits, or run unattended.');
 }
 export async function main(argv) {
+  if (argv[0] === 'install') return installMain(argv.slice(1));
   if (['config','project','next'].includes(argv[0])) return shortcutMain(argv);
   if (argv[0] === 'agent') return agentMain(argv.slice(1));
   if (argv[0] === 'task') return taskMain(argv.slice(1));
