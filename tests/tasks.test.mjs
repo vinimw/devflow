@@ -118,7 +118,7 @@ test('branch preview requires matching clean local repo; apply only then runs fe
   prepareBranch({cwd,issue:9,apply:true},fixture.gh,git,silent);
   assert.equal(gitCalls.some(args=>args[0]==='switch'),true);
 });
-test('pr creates draft only after clean committed and pushed branch',t=>{
+test('pr creates ready-for-review PR only after clean committed and pushed branch',t=>{
   const cwd=workspace(t),fixture=ghMock({items:[item(9,'In progress')]});
   const git=(args)=>{
     if(args[0]==='branch')return 'feat/9-new-dashboard';
@@ -129,13 +129,16 @@ test('pr creates draft only after clean committed and pushed branch',t=>{
   assert.equal(fixture.calls.some(args=>args[1]==='create'),false);
   openTaskPr({cwd,issue:9,apply:true},fixture.gh,git,silent);
   const command=fixture.calls.find(args=>args[0]==='pr'&&args[1]==='create');
-  assert.ok(command.includes('--draft'));
+  assert.ok(!command.includes('--draft'));
+  assert.equal(command.includes('--title'),true);
 });
 test('review verifies PR identity, branch, base and reference',t=>{
   const cwd=workspace(t),pr={number:3,state:'OPEN',headRefName:'feat/9-new-dashboard',baseRefName:'main',body:'Closes #9'};
   const fixture=ghMock({items:[item(9,'In progress')],pr});
   reviewTask({cwd,issue:9,pr:3,apply:true},fixture.gh,silent);
   assert.equal(fixture.calls.some(args=>args[1]==='item-edit'),true);
+  const draft=ghMock({items:[item(9,'In progress')],pr:{...pr,isDraft:true}});
+  assert.throws(()=>reviewTask({cwd,issue:9,pr:3,apply:true},draft.gh,silent),/PR does not match/);
   const invalid=ghMock({items:[item(9,'In progress')],pr:{...pr,headRefName:'fix/77-other'}});
   assert.throws(()=>reviewTask({cwd,issue:9,pr:3,apply:true},invalid.gh,silent),/does not match/);
 });
