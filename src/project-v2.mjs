@@ -226,8 +226,11 @@ export function syncIssue({ cwd = process.cwd(), issue, apply = false } = {}, gh
   }
   if (data.state !== 'OPEN') throw new Error('Closed issues cannot be newly synchronized');
 
+  const project = projectView(gh, settings.owner, settings.number);
+  if (!project.id) throw new Error('Project V2 GraphQL ID is unavailable');
   const fields = listFields(gh, settings.owner, settings.number);
-  if (!exactStatuses(findStatus(fields))) throw new Error('The Project Status field does not match the DevFlow workflow');
+  const statusField = findStatus(fields);
+  if (!exactStatuses(statusField)) throw new Error('The Project Status field does not match the DevFlow workflow');
 
   const payload = exec(gh, [
     'project', 'item-list', String(settings.number), '--owner', settings.owner,
@@ -241,13 +244,16 @@ export function syncIssue({ cwd = process.cwd(), issue, apply = false } = {}, gh
   const action = existing ? (existing.status ? 'preserve-existing-status' : 'set-blank-status-to-backlog') : 'add-to-backlog';
   const result = { repository: settings.repo, issue: number, projectNumber: settings.number, action, status: existing?.status ?? null, apply };
   if (!apply) return show(result, output);
-  if (!existing) {
-    exec(gh, ['project', 'item-add', String(settings.number), '--owner', settings.owner, '--url', data.url, '--format', 'json'], { json: true });
+  let item = existing;
+  if (!item) {
+    item = exec(gh, ['project', 'item-add', String(settings.number), '--owner', settings.owner, '--url', data.url, '--format', 'json'], { json: true });
   }
   if (!existing?.status) {
+    const backlog = statusField.options.find((option) => option.name === 'Backlog');
+    if (!item?.id || !statusField.id || !backlog?.id) throw new Error('Missing GitHub Project item, field or option ID');
     exec(gh, [
-      'project', 'item-edit', String(settings.number), '--owner', settings.owner,
-      '--url', data.url, '--field', 'Status', '--value', 'Backlog',
+      'project', 'item-edit', '--id', item.id, '--project-id', project.id,
+      '--field-id', statusField.id, '--single-select-option-id', backlog.id,
     ]);
     result.status = 'Backlog';
   }
