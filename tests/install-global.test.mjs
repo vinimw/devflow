@@ -41,7 +41,7 @@ test('apply installs both global skills and a functional CLI launcher',t=>{
   const wrapper=join(home,'.local/bin/devflow');
   const run=spawnSync(wrapper,['help'],{encoding:'utf8',timeout:12000});
   assert.equal(run.status,0,run.stderr);
-  assert.match(run.stdout,/DevFlow v0\.8/);
+  assert.match(run.stdout,/DevFlow v0\.9/);
   const profile=readFileSync(join(home,'.zshrc'),'utf8');
   assert.match(profile,/export PATH="\$HOME\/\.local\/bin:\$PATH"/);
 });
