@@ -120,7 +120,7 @@ export async function configure({cwd=process.cwd(),repo,projectNumber,name,apply
   }
   let project=null;
   if (chosen != null) project=projectDetails(transport,owner,chosen,base);
-  const title=validateProjectName(name || (old.name && old.name !== 'replace-me' ? old.name : project?.title ?? targetRepo.split('/')[1]));
+  const title=validateProjectName(name || ((old.repository && old.repository !== targetRepo) ? (project?.title ?? targetRepo.split('/')[1]) : (old.name && old.name !== 'replace-me' ? old.name : project?.title ?? targetRepo.split('/')[1])));
 
   const content=renderConfig(old,{repo:targetRepo,name:title,number:chosen});
   const changed=content!==old.text;
