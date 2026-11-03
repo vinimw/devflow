@@ -1,3 +1,4 @@
+import { shortcutMain } from './shortcuts.mjs';
 import { agentMain } from './agent.mjs';
 import { taskMain } from './tasks.mjs';
 import { projectMain } from './project-v2.mjs';
@@ -154,7 +155,10 @@ export function githubPlan(options = {}) {
   return plan;
 }
 function help() {
-  log('DevFlow v0.6 — reusable AI project workflow');
+  log('DevFlow v0.7 — reusable AI project workflow');
+  log('  devflow config [--cwd DIR] [--repo OWNER/REPO] [--project-number N] [--apply]');
+  log('  devflow project [--cwd DIR] [--apply]');
+  log('  devflow next [--cwd DIR] [--apply]');
   log('  devflow init [--cwd DIR] [--name NAME] [--repo OWNER/REPO] [--project-number N] [--ui-locale pt-BR] [--apply] [--force]');
   log('  devflow doctor [--cwd DIR] [--json]');
   log('  devflow github plan [--cwd DIR]');
@@ -175,6 +179,7 @@ function help() {
   log('Agent commands prepare files only. They never invoke AI, use credits, or run unattended.');
 }
 export async function main(argv) {
+  if (['config','project','next'].includes(argv[0])) return shortcutMain(argv);
   if (argv[0] === 'agent') return agentMain(argv.slice(1));
   if (argv[0] === 'task') return taskMain(argv.slice(1));
   if (argv[0] === 'github' && (argv[1] === 'project' || argv[1] === 'sync')) {

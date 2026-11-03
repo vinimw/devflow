@@ -11,6 +11,18 @@ Use DevFlow for the GitHub workflow lifecycle. Read the relevant files under `re
 
 The v0.5 CLI can install this skill in project-local Codex/Claude Code folders and prepare read-only GitHub task handoffs. See `references/subscription-safety.md`. Never invoke an agent or API automatically. Account-side confirmation of included allowance is mandatory before interactive use, and strict zero-extra-cost cannot be attested by this skill.
 
+## Short verbal commands (Claude Code and Codex)
+
+These are **chat commands directed to the currently running Claude Code or Codex agent**, NOT commands the user must type in a shell. Resolve the requested action in the agent session, read project instructions and, when a local checkout of the DevFlow CLI is available, call it as a subprocess. If the CLI is unavailable, disclose the missing installation instead of inventing tool results. Give a preview and explain what will change.
+
+- **`devflow config`**: inspect GitHub repository and Project V2 binding; ask for missing owner/repository and existing Project number, verify both connections, then request permission to save `.devflow.yaml`. Run `devflow config` in a terminal, or invoke `node /path/to/devflow/bin/devflow.mjs config --cwd <target>` when the CLI is not linked.
+- **`devflow project`**: inspect the configured Project V2 Status field. Present differences and request explicit authorization before using `devflow project --apply` to repair safe known defaults. Unknown or ambiguous statuses require manual review.
+- **`devflow next`**: preview the highest-priority eligible Ready issue, dependencies and WIP. After user approval, run `devflow next --apply` to claim and prepare a branch, then continue implementation **using this same current agent session**. Do not spawn a second agent or pay-as-you-go API call.
+- **`devflow doctor`**: report setup, GitHub credentials and local environment checks with no mutation.
+- **`devflow task pr --issue N`**, **`devflow task review --issue N --pr P`**, **`devflow task complete --issue N --pr P`**: inspect the state, then apply only after permission and necessary checks; never auto-merge.
+
+**Explicit skill invocation:** In Claude Code use `/devflow config`, `/devflow project`, or `/devflow next`; Claude Code invokes the `devflow` skill with the remaining words as task context. In Codex use `$devflow config`, `$devflow project`, or `$devflow next` to explicitly select the skill. Plain `devflow config` is a natural-language trigger that may invoke the skill implicitly, not a guaranteed native command. If the terminal is not interactive, ask the user for the missing configuration inputs and pass them as CLI options rather than guessing. Never hide GitHub writes: require explicit approval before applying any change. All provider usage must remain within the interactive user-controlled session, subject to `references/subscription-safety.md`.
+
 ## Before acting
 
 1. Inspect the target repository and read its `AGENTS.md`, `CLAUDE.md`, `.devflow.yaml` and architecture/task docs when available.
