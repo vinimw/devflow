@@ -50,7 +50,7 @@ These are **chat commands directed to the currently running Claude Code or Codex
 - Select only Ready issues; priorities P0 > P1 > P2 > P3, oldest first. Respect dependencies and existing work/PRs.
 - Do not promote Backlog automatically or overwrite local modifications.
 - Run applicable lint, typecheck, formatting, build and functional validation. Report unverified mandatory checks.
-- Open a PR against the configured default branch. PR creation is not task completion; Done follows verified merge.
+- Open a **ready-for-review (non-Draft)** PR against the configured default branch once applicable validation and diff review are complete. PR creation is not task completion; Done follows verified merge.
 - Auto-merge is off by default. Never bypass required checks, review or branch protection.
 
 ## Modes
