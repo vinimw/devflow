@@ -17,6 +17,12 @@ If the user opens this cloned repository in Codex or Claude Code and says **"ins
 
 The installed global skill is available to all local projects. New projects need their own `.devflow.yaml`, created through the conversational `devflow config` workflow.
 
+## Natural-language global uninstall trigger
+
+If the user says **"desinstalar devflow global"**, **"remover DevFlow global"**, or **"uninstall DevFlow globally"**, inspect this checkout and preview using `node bin/devflow.mjs uninstall global`. Show exactly which known DevFlow-owned links, launcher and shell PATH fragment would be removed, then ask for explicit confirmation. Only then run `node bin/devflow.mjs uninstall global --apply`.
+
+Do not delete the cloned repository or any real existing directory. Do not remove unknown/broken symlinks, customized launchers, or unrelated PATH entries. Verify the resulting absence of owned links and wrapper. Repeat-safe uninstall is supported. If the current session still sees the skill or shell command, explain that the terminal and agent may need restarting.
+
 ## Safety and financial policy
 
 The installer is local-only: no API calls, no AI provider invocation, no token handling, no purchasing credits, no GitHub writes. Do not spawn another AI agent. This conversation with Codex or Claude Code may use included subscription usage and cannot be guaranteed to avoid purchased credits; do not enable paid continuation.
