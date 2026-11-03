@@ -1,6 +1,6 @@
 # Claude Code — DevFlow bootstrap
 
-Read [AGENTS.md](AGENTS.md) for repository-wide safety rules.
+Read [AGENTS.md](AGENTS.md) for repository-wide safety rules. **All user-facing DevFlow explanations, confirmations and results must default to Portuguese (Brazil, `pt-BR`)**, unless the user explicitly requests another language. Keep code, commands and Git metadata in English.
 
 When the user opens this fresh DevFlow clone in Claude Code and requests **"instalar devflow global"** or **"install DevFlow globally"**, you do **not** need DevFlow installed yet: these repository instructions are the bootstrap.
 
