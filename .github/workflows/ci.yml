@@ -34,5 +34,8 @@ jobs:
       - name: Run CLI tests
         run: npm test
 
+      - name: Run offline first-run smoke test
+        run: npm run smoke
+
       - name: Verify CLI entrypoint
         run: node bin/devflow.mjs help
