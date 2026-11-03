@@ -4,7 +4,7 @@
 
 DevFlow standardizes repository initialization, GitHub Projects V2 boards, structured tasks, GitHub Flow, pull requests, and agent handoffs. It is based on the workflow developed for [DeepGrow](https://github.com/vinimw/deepgrow), but its configuration is independent of any particular application.
 
-> **Current release: v0.8 (proposed).** The project consists of a portable agent skill, a local Node.js CLI, templates, documentation, automated tests, and an offline installation smoke test. **It is not a background AI agent or an autonomous coding service.**
+> **Current release: v0.9 (proposed).** The project consists of a portable agent skill, a local Node.js CLI, templates, documentation, automated tests, and an offline installation smoke test. **It is not a background AI agent or an autonomous coding service.**
 
 ## What you get
 
@@ -30,6 +30,34 @@ Backlog  →  Ready  →  In progress  →  In review  →  Done
 ```
 
 Only eligible **Ready** issues are selected. Priority order: `P0 > P1 > P2 > P3`, oldest issue first on ties. The default policy allows only one active task globally. Code, branches, and commits are in English; user-facing application language is independently configurable (such as `pt-BR`).
+
+## Safely uninstall the global installation (v0.9)
+
+If you want to test the global installer again from a clean state, open the **DevFlow clone** in Claude Code or Codex and tell the agent:
+
+> desinstalar devflow global
+
+The repository's `AGENTS.md` and `CLAUDE.md` instruct the agent to **preview first**, show the exact changes and request permission before removing anything. This is supported even if the global skill installation is absent.
+
+Or use the DevFlow CLI from the clone:
+
+```bash
+# Read-only preview
+node bin/devflow.mjs uninstall global
+
+# After reviewing the plan
+node bin/devflow.mjs uninstall global --apply
+```
+
+The tool removes **only** the verified DevFlow-owned symlinks `~/.claude/skills/devflow`, `~/.agents/skills/devflow`, the DevFlow-generated `~/.local/bin/devflow` launcher, and the exact managed PATH block in `~/.zshrc` or `~/.bashrc`. It preserves your original cloned repository, independent projects, unrelated profiles and custom scripts. Incompatible existing paths are left unchanged and reported. Repeating uninstall is safe.
+
+When complete, open a fresh agent and terminal session as necessary. To test installation from scratch, return to this clone and ask:
+
+> instalar devflow global
+
+The installer does not call an AI API; conversations inside Claude Code or Codex still use the active provider plan and may draw from purchased credits depending on account settings.
+
+---
 
 ## One-message global installation from a fresh clone (v0.8)
 
