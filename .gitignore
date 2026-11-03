@@ -7,3 +7,6 @@ node_modules/
 *.sqlite
 *.sqlite3
 .tmp/
+
+# Generated task payloads remain local by default
+.devflow/handoffs/

@@ -73,6 +73,20 @@ node bin/devflow.mjs task complete --issue 123 --pr 45 --apply
 
 Each command can be previewed without `--apply`. Code implementation, tests, commits, push, PR approval and merge remain deliberate separate steps. See [task lifecycle and safety requirements](docs/TASK_LIFECYCLE.md).
 
+## Supervised AI-agent handoffs (v0.5)
+
+DevFlow now installs the portable skill **inside your target project** and creates an agent-ready handoff for an approved **In progress** issue. It does not invoke Claude Code, Codex, AI APIs or unattended background workers.
+
+```bash
+node bin/devflow.mjs agent install --cwd /path/to/project
+node bin/devflow.mjs agent install --cwd /path/to/project --apply
+node bin/devflow.mjs agent preflight --provider codex
+node bin/devflow.mjs agent handoff --cwd /path/to/project --issue 123 --provider codex
+node bin/devflow.mjs agent handoff --cwd /path/to/project --issue 123 --provider codex --apply
+```
+
+**Billing constraint:** Official subscription authentication alone cannot guarantee included-allowance-only usage. The CLI fails closed against API-key environments and performs **no AI requests**; it cannot verify whether a future manually started agent session will consume purchased credits. Verify the official account usage settings before interactive work. See [Agent usage and spending controls](docs/AGENTS.md).
+
 ## Set up a project
 
 1. Copy `templates/project/devflow.yaml` to `.devflow.yaml` in the target repository; replace all placeholder values.
@@ -85,7 +99,7 @@ Default statuses: **Backlog → Ready → In progress → In review → Done**. 
 
 ## What this release does and does not do
 
-**v0.4** provides a skill, templates, project initialization, Project V2 setup/sync and an operator-driven task lifecycle CLI. It does not yet install full GitHub Actions task lifecycle automation, implement AI code generation, or provide an autonomous agent daemon. GitHub writes require appropriate access and tools. Autonomous merge is **disabled by default** and requires a separate approved implementation, protections and validation.
+**v0.5** provides a skill, templates, project initialization, Project V2 setup/sync and an operator-driven task lifecycle CLI. It adds subscription-safe project-local skill installation and supervised task handoffs, but does not execute AI requests or run an autonomous agent daemon. GitHub writes require appropriate access and tools. Autonomous merge is **disabled by default** and requires a separate approved implementation, protections and validation.
 
 ### Cost and credentials
 

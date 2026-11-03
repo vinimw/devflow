@@ -1,3 +1,4 @@
+import { agentMain } from './agent.mjs';
 import { taskMain } from './tasks.mjs';
 import { projectMain } from './project-v2.mjs';
 import { existsSync, readFileSync, writeFileSync, mkdirSync, copyFileSync } from 'node:fs';
@@ -168,8 +169,13 @@ function help() {
   log('  devflow task pr --issue N [--apply]   # draft PR, never pushes');
   log('  devflow task review --issue N --pr P [--apply]');
   log('  devflow task complete --issue N --pr P [--apply]');
+  log('  devflow agent preflight [--provider codex|claude]');
+  log('  devflow agent install [--cwd DIR] [--provider codex|claude|both] [--apply]');
+  log('  devflow agent handoff --issue N [--provider codex|claude] [--apply]');
+  log('Agent commands prepare files only. They never invoke AI, use credits, or run unattended.');
 }
 export async function main(argv) {
+  if (argv[0] === 'agent') return agentMain(argv.slice(1));
   if (argv[0] === 'task') return taskMain(argv.slice(1));
   if (argv[0] === 'github' && (argv[1] === 'project' || argv[1] === 'sync')) {
     return projectMain(argv[1] === 'project' ? argv.slice(2) : ['sync', ...argv.slice(2)]);
