@@ -31,6 +31,20 @@ cp -R skills/devflow ~/.agents/skills/devflow
 
 If an installation already exists, review its contents before overwriting it. You can also install to the agent's project-local skills folder.
 
+## DevFlow CLI (v0.2)
+
+A Node.js 20+ CLI now supports dry-run-first project scaffolding, diagnostics, and idempotent creation of missing GitHub labels. From a checkout of this repository:
+
+```bash
+node bin/devflow.mjs init --cwd /path/to/project --name MyApp --repo owner/myapp --project-number 4
+node bin/devflow.mjs init --cwd /path/to/project --name MyApp --repo owner/myapp --project-number 4 --apply
+node bin/devflow.mjs doctor --cwd /path/to/project
+node bin/devflow.mjs github plan --cwd /path/to/project
+node bin/devflow.mjs github setup --cwd /path/to/project --apply
+```
+
+Existing files are preserved unless both `--apply` and `--force` are given. GitHub setup only creates missing **labels**; Project V2 boards and status fields are not provisioned yet. See [CLI commands and limitations](docs/CLI.md).
+
 ## Set up a project
 
 1. Copy `templates/project/devflow.yaml` to `.devflow.yaml` in the target repository; replace all placeholder values.
@@ -43,7 +57,7 @@ Default statuses: **Backlog → Ready → In progress → In review → Done**. 
 
 ## What this release does and does not do
 
-**v0.1** provides a skill and starter templates. It does not contain an executable GitHub Projects CLI or an autonomous agent daemon. GitHub writes require appropriate access and tools. Autonomous merge is **disabled by default** and requires a separate approved implementation, protections and validation.
+**v0.2** provides a skill, starter templates, and a local project initialization CLI. It does not yet provision GitHub Projects V2 boards/status fields or provide an autonomous agent daemon. GitHub writes require appropriate access and tools. Autonomous merge is **disabled by default** and requires a separate approved implementation, protections and validation.
 
 ### Cost and credentials
 
