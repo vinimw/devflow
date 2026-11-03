@@ -2,6 +2,10 @@
 
 This repository is the **DevFlow installer source**, not an application that needs DevFlow project configuration.
 
+## Default communication language
+
+For DevFlow-related conversations in Claude Code or Codex, respond to the user in **Brazilian Portuguese (`pt-BR`)** by default, including installation and uninstallation plans, confirmation requests, errors and completion summaries. The user's explicit language request overrides this default. Source code, Git metadata, identifiers, CLI commands and machine-readable fields remain in English. Once installed, apply the skill's language policy; per-project `development.response_locale` may override `pt-BR`. Application `development.ui_locale` is a separate setting.
+
 ## Natural-language global installation trigger
 
 If the user opens this cloned repository in Codex or Claude Code and says **"instalar devflow global"**, **"install DevFlow globally"**, or similar, treat it as a request to install DevFlow on the current machine **without requiring any pre-installed DevFlow skill**.
