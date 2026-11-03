@@ -50,7 +50,7 @@ export function persistProjectNumber(settings, number, write = writeFileSync) {
   if (settings.number !== null && settings.number !== number) {
     throw new Error('Refusing to replace an existing GitHub Project number');
   }
-  const next = settings.text.replace(/^([ \t]*github_project_number[ \t]*:[ \t]*)(null|[0-9]+)([ \t]*(?:#.*)?)$/m, '$1' + String(number) + '$3');
+  const next = settings.text.replace(/^([ \t]*github_project_number[ \t]*:[ \t]*)(null|[0-9]+)([ \t]*(?:#.*)?)$/m, (_match, prefix, _old, suffix) => prefix + String(number) + suffix);
   if (next === settings.text && settings.number !== number) {
     throw new Error('Cannot safely update github_project_number in .devflow.yaml');
   }
