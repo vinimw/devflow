@@ -31,6 +31,47 @@ Backlog  →  Ready  →  In progress  →  In review  →  Done
 
 Only eligible **Ready** issues are selected. Priority order: `P0 > P1 > P2 > P3`, oldest issue first on ties. The default policy allows only one active task globally. Code, branches, and commits are in English; user-facing application language is independently configurable (such as `pt-BR`).
 
+## Chat commands inside Claude Code and Codex (v0.7)
+
+**You type commands in the AI agent's chat, not in your terminal.** DevFlow is a reusable skill, and the agent interprets the command and invokes the underlying GitHub/CLI tools in the **current project and session**. It must first show what it found and request confirmation before writing changes.
+
+| What you say in chat | What the agent does |
+| --- | --- |
+| `devflow config` | Inspect local configuration, ask for the repository/Project when missing, verify access, then ask to save configuration |
+| `devflow project` | Audit the configured GitHub Project V2 and propose safe status fixes |
+| `devflow next` | Check Ready issues, priority, dependencies and WIP; ask before claiming, creating branch and implementing |
+| `devflow doctor` | Diagnose local Git/GitHub/CLI and setup without changing anything |
+| `devflow task pr --issue N` | Inspect task branch and validations; ask before opening a draft PR |
+| `devflow task complete --issue N --pr P` | Verify an actual merge before marking Done |
+
+**Explicit invocation**: In Claude Code, type `/devflow config`, `/devflow project`, or `/devflow next` when the project-local skill is installed and discovered. In Codex, use `$devflow config`, `$devflow project`, or `$devflow next` to explicitly invoke the skill. Plain `devflow config` is a natural-language request and depends on the agent recognizing the installed skill.
+
+**The CLI is internal to this workflow**: The agent may run `node /path/to/devflow/bin/devflow.mjs config` or another CLI command itself; you do not need to type it manually. Make sure the agent has terminal/GitHub access and can locate the DevFlow CLI checkout. The skill itself is instructions, not a program that can run commands without tools or permissions.
+
+The short CLI commands remain available for troubleshooting and scripting. They preview by default, can ask questions in an interactive terminal, and require `--apply` to perform noninteractive writes. **Chat requests do not automatically authorize writes**: the agent must still ask before applying modifications.
+
+### Example: initial chat setup
+
+In an interactive Claude Code session, say:
+
+> /devflow config
+
+The agent should check whether `.devflow.yaml` exists and whether GitHub repository and Project V2 are accessible. If not configured, it asks for the repository and Project number, verifies both, explains what will be saved, and requests approval.
+
+Then say:
+
+> /devflow project
+
+The agent checks the status options `Backlog → Ready → In progress → In review → Done`. If differences are found, it proposes a plan. It must **not delete or remap unknown status options without review**, especially when items already exist.
+
+Finally:
+
+> /devflow next
+
+The agent shows the highest-priority eligible Ready issue and asks whether to claim and start development in the *current* session. No new AI session or paid API is launched by the CLI. A Claude/Codex interaction can still consume your subscription allowance and is not a technical guarantee against paid credits.
+
+For installation and the complete CLI reference, continue with the sections below.
+
 ## 1. Prerequisites
 
 For macOS, Linux, or Windows with a suitable shell:
