@@ -41,7 +41,7 @@ test('apply installs both global skills and a functional CLI launcher',t=>{
   const wrapper=join(home,'.local/bin/devflow');
   const run=spawnSync(wrapper,['help'],{encoding:'utf8',timeout:12000});
   assert.equal(run.status,0,run.stderr);
-  assert.match(run.stdout,/DevFlow v0\.9/);
+  assert.match(run.stdout,/DevFlow v0\.10/);
   const profile=readFileSync(join(home,'.zshrc'),'utf8');
   assert.match(profile,/export PATH="\$HOME\/\.local\/bin:\$PATH"/);
 });
@@ -60,7 +60,7 @@ test('conflicting existing directories fail closed without modifying any destina
   const result=globalInstall(testOptions(home),quiet);
   assert.equal(result.ok,false);
   assert.equal(result.files.find(x=>x.path===occupied).action,'conflict');
-  assert.throws(()=>globalInstall(testOptions(home,{apply:true}),quiet),/installation blocked/);
+  assert.throws(()=>globalInstall(testOptions(home,{apply:true}),quiet),/Instalação global bloqueada/);
   assert.ok(lstatSync(occupied).isDirectory());
   assert.equal(existsSync(join(home,'.agents')),false);
 });
@@ -70,7 +70,7 @@ test('conflicting symlink destination is preserved',t=>{
   mkdirSync(other);
   mkdirSync(join(home,'.agents/skills'),{recursive:true});
   symlinkSync(other,join(home,'.agents/skills/devflow'));
-  assert.throws(()=>globalInstall(testOptions(home,{apply:true}),quiet),/installation blocked/);
+  assert.throws(()=>globalInstall(testOptions(home,{apply:true}),quiet),/Instalação global bloqueada/);
   assert.equal(realpathSync(join(home,'.agents/skills/devflow')),realpathSync(other));
 });
 test('existing unrelated zsh profile content is retained',t=>{
@@ -92,5 +92,5 @@ test('install CLI rejects unsupported options and missing scope',()=>{
   assert.deepEqual(parseInstallArgs(['global','--apply']),{apply:true});
   assert.deepEqual(parseInstallArgs(['global','--skip-shell']),{skipShell:true});
   assert.throws(()=>parseInstallArgs(['local']),/Usage/);
-  assert.throws(()=>parseInstallArgs(['global','--force']),/Unknown install option/);
+  assert.throws(()=>parseInstallArgs(['global','--force']),/Opção de instalação desconhecida/);
 });
