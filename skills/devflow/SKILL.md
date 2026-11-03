@@ -32,9 +32,9 @@ Use DevFlow for the GitHub workflow lifecycle. Read the relevant files under `re
 
 **Audit/plan:** Read only; document gaps and propose a rollout.
 
-**Create tasks:** Read `references/task-management.md`. Search for duplicates, create actionable issues with all required sections and labels; Backlog only. If Projects V2 write access is unavailable, report the issue/board split instead of claiming the status was set.
+**Create tasks:** Read `references/task-management.md` and `docs/TASK_LIFECYCLE.md` in this repository when available. Use `devflow task create` only after checking the target issue specification. Search for duplicates, create actionable issues with all required sections and labels; Backlog only. If Projects V2 write access is unavailable, report the issue/board split instead of claiming the status was set.
 
-**Execute:** Read `references/execution.md` and `references/workflow.md`. Claim only an eligible task, implement in a safe branch/worktree, validate, open or reuse a PR, and reconcile board status.
+**Execute:** Read `references/execution.md` and `references/workflow.md`. The v0.4 CLI exposes `devflow task next|branch|pr|review|complete`; validate and inspect the changes before advancing status. Claim only an eligible task, implement in a safe branch/worktree, validate, open or reuse a PR, and reconcile board status.
 
 **Autopilot:** Read `references/autopilot.md`. Autonomous execution requires an actual, separately installed and approved orchestration system; this skill alone cannot keep running.
 
