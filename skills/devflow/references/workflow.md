@@ -14,7 +14,7 @@ Default: Backlog → Ready → In progress → In review → Done. Discover proj
 - Branch: `feat/123-add-plant`, `fix/124-plants-route`, etc.
 - Commit: `feat(web): add plant drawer`; Conventional Commits 1.0.0.
 - PR targets default branch and links issue with `Closes #123` if compatible with repository automation.
-- Move to In review only after PR exists. Done only after verified merge and issue reconciliation.
+- Create PRs as **ready for review**, never Draft by default, after validation and human review of the diff. Move to In review only after an open, non-Draft PR exists. Done only after verified merge and issue reconciliation.
 - Merge manually by default; autonomous merge requires explicit opt-in and protected-branch gates.
 
 ## Validation

@@ -15,7 +15,7 @@ DevFlow standardizes repository initialization, GitHub Projects V2 boards, struc
 | GitHub labels | Preview and create missing labels |
 | GitHub Projects V2 | Preview and create/reuse board; configure *new* board statuses |
 | GitHub issues | Create structured tasks and synchronize to Backlog |
-| Task lifecycle | Select Ready, prepare branch, open draft PR, move to review, complete after verified merge |
+| Task lifecycle | Select Ready, prepare branch, open ready-for-review PR, move to review, complete after verified merge |
 | AI integration | Generate a handoff for an **interactive, supervised** agent session |
 | Ongoing AI automation | **Not implemented / not enabled** |
 | Zero-extra-cost AI guarantee | **Not technically attestable**; DevFlow performs no AI calls |
@@ -186,7 +186,7 @@ Both agents use the same skill symlink and CLI. Restart the terminal or agent se
 | `devflow project` | Audit the configured GitHub Project V2 and propose safe status fixes |
 | `devflow next` | Select the highest-priority eligible Ready issue and immediately claim, prepare its branch and begin implementing in the same agent session; ask only for real blockers or separately permission-gated actions |
 | `devflow doctor` | Diagnose local Git/GitHub/CLI and setup without changing anything |
-| `devflow task pr --issue N` | Inspect task branch and validations; ask before opening a draft PR |
+| `devflow task pr --issue N` | Inspect task branch and validations; ask before opening a ready-for-review PR |
 | `devflow task complete --issue N --pr P` | Verify an actual merge before marking Done |
 
 **Explicit invocation**: In Claude Code, type `/devflow config`, `/devflow project`, or `/devflow next` when the project-local skill is installed and discovered. In Codex, use `$devflow config`, `$devflow project`, or `$devflow next` to explicitly invoke the skill. Plain `devflow config` is a natural-language request and depends on the agent recognizing the installed skill.
@@ -423,7 +423,7 @@ node ~/Projects/devflow/bin/devflow.mjs task pr \
   --cwd ~/Projects/devflow-playground --issue 123 --apply
 ```
 
-This opens a **draft PR**, without merging it.
+This opens a **ready-for-review PR**, without merging it.
 
 When the PR is ready to be reviewed and correctly linked to the issue:
 

@@ -260,9 +260,9 @@ export function openTaskPr({cwd=process.cwd(),issue,apply=false}={},gh=systemGh,
   if (prs.some(p=>p.headRefName===name)) throw new Error('PR already exists for this branch; reuse it');
   const target=ghCall(gh,['repo','view',settings.repo,'--json','defaultBranchRef'],cwd).defaultBranchRef?.name;
   if (!target) throw new Error('Cannot verify PR base');
-  const result={branch:name,base:target,issue:number,apply,action:'create-draft-pr'};
+  const result={branch:name,base:target,issue:number,apply,action:'create-ready-pr'};
   if (apply) {
-    result.url=ghCall(gh,['pr','create','--repo',settings.repo,'--base',target,'--head',name,'--draft',
+    result.url=ghCall(gh,['pr','create','--repo',settings.repo,'--base',target,'--head',name,
       '--title',data.title,'--body','Closes #'+number+'\n\nValidation and human review are required before merge.'],cwd,false);
   }
   output(result);return result;
@@ -275,7 +275,7 @@ export function reviewTask({cwd=process.cwd(),issue,pr,apply=false}={},gh=system
   if (item?.status!=='In progress') throw new Error('Issue must be In progress before entering review');
   const ref=ghCall(gh,['pr','view',String(prNumber),'--repo',settings.repo,'--json','number,state,isDraft,baseRefName,headRefName,body'],cwd);
   const target=ghCall(gh,['repo','view',settings.repo,'--json','defaultBranchRef'],cwd).defaultBranchRef?.name;
-  if (ref.number!==prNumber || ref.state!=='OPEN' || ref.baseRefName!==target || ref.headRefName!==branchName(data) ||
+  if (ref.number!==prNumber || ref.state!=='OPEN' || ref.isDraft===true || ref.baseRefName!==target || ref.headRefName!==branchName(data) ||
       !new RegExp('(?:Closes|Fixes|Resolves)\\s+#'+number+'\\b','i').test(ref.body??'')) throw new Error('PR does not match expected issue, branch, base or closing reference');
   const result={issue:number,pr:prNumber,apply,status:'In review'};
   if(apply)changeStatus(gh,settings,item.id,'In review');

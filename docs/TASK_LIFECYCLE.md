@@ -48,16 +48,16 @@ The CLI requires that the issue be In progress, the working tree be clean and th
 
 The developer or AI agent implements and validates the issue, creates Conventional Commits, and pushes the task branch separately. No automatic code generation, push or merge is performed by this command.
 
-## 4. Open a draft Pull Request
+## 4. Open a ready-for-review Pull Request
 
 ```sh
 devflow task pr --issue 123
 devflow task pr --issue 123 --apply
 ```
 
-Requires a clean working tree and the expected issue branch, with no unpushed local commits. The PR is created **as a draft**, targeting the repository's default branch and linking the issue with `Closes #123`.
+Requires a clean working tree and the expected issue branch, with no unpushed local commits. The PR is created **ready for review (not Draft)**, targeting the repository's default branch and linking the issue with `Closes #123`.
 
-This command **does not assert that tests passed** and never silently pushes. It must be preceded by actual validation and review. Do not mark a draft PR ready to merge without passing required CI checks.
+This command **does not assert that tests passed** and never silently pushes. It must be preceded by actual validation and a review of the changes. A ready-for-review PR is **not** automatically approved or mergeable: required CI checks, review and branch protections still apply.
 
 ## 5. Move to review
 
@@ -66,7 +66,7 @@ devflow task review --issue 123 --pr 45
 devflow task review --issue 123 --pr 45 --apply
 ```
 
-Verifies that the PR is open, targets the default branch, belongs to the expected issue branch, and contains the closing reference. Then it moves the issue to In review; it does not automatically approve or merge the PR.
+Verifies that the PR is open, **not Draft**, targets the default branch, belongs to the expected issue branch, and contains the closing reference. Then it moves the issue to In review; it does not automatically approve or merge the PR.
 
 ## 6. Complete only after merge
 

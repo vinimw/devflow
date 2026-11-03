@@ -7,7 +7,7 @@ The user invoking `devflow next` authorizes selecting, claiming and starting **o
 3. Implement only the issue's scope using the repository's stack and Docker/deployment standards.
 4. Run relevant validation. Respect policy excluding unit tests when applicable; mandatory integration checks cannot be silently skipped.
 5. Review the diff for credentials, unrelated changes, unexpected dependencies, destructive steps and high-risk policy files.
-6. When approved, commit using Conventional Commits, push to task branch, open or reuse PR into the default branch, and link issue.
+6. When approved, commit using Conventional Commits, push to task branch, open or reuse a **ready-for-review (non-Draft)** PR into the default branch, and link the issue. Do not publish an unvalidated change as ready; resolve blockers or report them before PR creation.
 7. Move to In review only once PR exists. Do not mark Done until the merge and status reconciliation are verified.
 8. Stop and ask only for **material** unresolved decisions or blockers: conflicting/unsafe local changes, missing access or credentials, unsupported hardware, ambiguous high-impact architecture, paid services or spending, destructive changes, or permission-gated Git operations. For reversible, low-risk implementation details, use the repository's conventions and document the choice instead of asking.
 
