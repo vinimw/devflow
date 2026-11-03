@@ -7,6 +7,10 @@ description: Standardize GitHub Flow, GitHub Projects V2 tasks, Conventional Com
 
 Use DevFlow for the GitHub workflow lifecycle. Read the relevant files under `references/` **relative to this SKILL.md**.
 
+## Install and hand off safely
+
+The v0.5 CLI can install this skill in project-local Codex/Claude Code folders and prepare read-only GitHub task handoffs. See `references/subscription-safety.md`. Never invoke an agent or API automatically. Account-side confirmation of included allowance is mandatory before interactive use, and strict zero-extra-cost cannot be attested by this skill.
+
 ## Before acting
 
 1. Inspect the target repository and read its `AGENTS.md`, `CLAUDE.md`, `.devflow.yaml` and architecture/task docs when available.
