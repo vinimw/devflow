@@ -24,7 +24,7 @@ function presence(path) {
 function ensureRegularSource() {
   for (const path of [join(SKILL_SOURCE, 'SKILL.md'), CLI_SOURCE]) {
     if (!presence(path)?.isFile()) {
-      throw new Error('Missing DevFlow source: ' + path);
+      throw new Error('Arquivo necessário do DevFlow não encontrado: ' + path);
     }
   }
 }
@@ -32,7 +32,7 @@ function linkPlan(path, source) {
   const current = presence(path);
   if (!current) return { path, action: 'create', kind: 'link' };
   if (!current.isSymbolicLink()) {
-    return { path, action: 'conflict', kind: 'link', reason: 'An existing file or directory must be preserved' };
+    return { path, action: 'conflict', kind: 'link', reason: 'Arquivo ou diretório existente deve ser preservado' };
   }
   try {
     if (realpathSync(path) === realpathSync(source)) {
@@ -41,16 +41,16 @@ function linkPlan(path, source) {
   } catch {
     // Broken links and inaccessible targets are never overwritten.
   }
-  return { path, action: 'conflict', kind: 'link', reason: 'Existing symbolic link points elsewhere or is broken' };
+  return { path, action: 'conflict', kind: 'link', reason: 'Link simbólico existente aponta para outro destino ou está quebrado' };
 }
 function filePlan(path, desired) {
   const current = presence(path);
   if (!current) return { path, action: 'create', kind: 'script' };
   if (!current.isFile()) {
-    return { path, action: 'conflict', kind: 'script', reason: 'Existing path is not a regular file' };
+    return { path, action: 'conflict', kind: 'script', reason: 'O caminho existente não é um arquivo comum' };
   }
   if (readFileSync(path, 'utf8') !== desired) {
-    return { path, action: 'conflict', kind: 'script', reason: 'Existing CLI script has different content' };
+    return { path, action: 'conflict', kind: 'script', reason: 'O executável existente possui conteúdo diferente' };
   }
   return { path, action: 'unchanged', kind: 'script' };
 }
@@ -58,7 +58,7 @@ function profilePlan(path, line) {
   const current = presence(path);
   if (!current) return { path, action: 'create', kind: 'profile' };
   if (!current.isFile()) {
-    return { path, action: 'conflict', kind: 'profile', reason: 'Shell profile is not a regular file' };
+    return { path, action: 'conflict', kind: 'profile', reason: 'O perfil do terminal não é um arquivo comum' };
   }
   const content = readFileSync(path, 'utf8');
   if (content.includes(line)) return { path, action: 'unchanged', kind: 'profile' };
@@ -72,7 +72,7 @@ function shellConfig(shell) {
 }
 function conflictMessage(plans) {
   const conflicts = plans.filter(item => item.action === 'conflict');
-  return 'Global installation blocked; review existing paths before retrying:\n' +
+  return 'Instalação global bloqueada; revise os caminhos existentes antes de tentar novamente:\n' +
     conflicts.map(item => '- ' + item.path + ': ' + item.reason).join('\n');
 }
 
@@ -89,8 +89,8 @@ export function globalInstall({
 } = {}, output = console.log) {
   ensureRegularSource();
   const root = resolve(home);
-  if (!presence(root)?.isDirectory()) throw new Error('Home directory does not exist: ' + root);
-  if (!statSync(projectRoot).isDirectory()) throw new Error('DevFlow checkout does not exist');
+  if (!presence(root)?.isDirectory()) throw new Error('Diretório pessoal não encontrado: ' + root);
+  if (!statSync(projectRoot).isDirectory()) throw new Error('Repositório local do DevFlow não encontrado');
 
   const linkTargets = [
     join(root, '.claude', 'skills', 'devflow'),
@@ -139,7 +139,7 @@ export function globalInstall({
       // Re-check to avoid accidentally overwriting paths created in between.
       const path = entry.path;
       if (entry.kind === 'link') {
-        if (presence(path)) throw new Error('Path changed after preflight: ' + path);
+        if (presence(path)) throw new Error('O caminho foi alterado após a verificação inicial: ' + path);
         mkdirSync(dirname(path), {recursive:true});
         symlinkSync(SKILL_SOURCE, path, 'dir');
       } else if (entry.kind === 'script') {
@@ -150,7 +150,7 @@ export function globalInstall({
       } else if (entry.kind === 'profile') {
         const line = IDENTIFIER + '\n' + profileLine + '\n';
         if (entry.action === 'create') {
-          if (presence(path)) throw new Error('Profile changed after preflight: ' + path);
+          if (presence(path)) throw new Error('O perfil do terminal foi alterado após a verificação inicial: ' + path);
           writeFileSync(path, line, {flag:'wx'});
         } else if (entry.action === 'append') {
           if (!presence(path)?.isFile()) throw new Error('Profile changed after preflight: ' + path);
@@ -165,8 +165,8 @@ export function globalInstall({
   }
   result.ok = true;
   result.message = apply
-    ? 'Installed DevFlow globally. Restart your terminal/agent session if PATH or skill discovery needs refreshing.'
-    : 'Preview only. Re-run with --apply after reviewing the planned changes.';
+    ? 'DevFlow instalado globalmente. Reinicie o terminal ou a sessão do agente, se necessário, para atualizar o PATH e o reconhecimento da skill.'
+    : 'Apenas prévia. Revise as alterações e execute novamente com --apply para aplicar.';
   output?.(result);
   return result;
 }
@@ -181,10 +181,10 @@ export function parseInstallArgs(argv) {
     if (arg === '--skip-shell') {opts.skipShell = true; continue;}
     if (arg === '--home') {
       const home = args[++i];
-      if (!home || home.startsWith('--')) throw new Error('Missing --home directory');
+      if (!home || home.startsWith('--')) throw new Error('Informe o diretório após --home');
       opts.home = home; continue;
     }
-    throw new Error('Unknown install option: ' + arg);
+    throw new Error('Opção de instalação desconhecida: ' + arg);
   }
   return opts;
 }
