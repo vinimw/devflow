@@ -184,7 +184,7 @@ Both agents use the same skill symlink and CLI. Restart the terminal or agent se
 | --- | --- |
 | `devflow config` | Inspect local configuration, ask for the repository/Project when missing, verify access, then ask to save configuration |
 | `devflow project` | Audit the configured GitHub Project V2 and propose safe status fixes |
-| `devflow next` | Check Ready issues, priority, dependencies and WIP; ask before claiming, creating branch and implementing |
+| `devflow next` | Select the highest-priority eligible Ready issue and immediately claim, prepare its branch and begin implementing in the same agent session; ask only for real blockers or separately permission-gated actions |
 | `devflow doctor` | Diagnose local Git/GitHub/CLI and setup without changing anything |
 | `devflow task pr --issue N` | Inspect task branch and validations; ask before opening a draft PR |
 | `devflow task complete --issue N --pr P` | Verify an actual merge before marking Done |
@@ -213,7 +213,7 @@ Finally:
 
 > /devflow next
 
-The agent shows the highest-priority eligible Ready issue and asks whether to claim and start development in the *current* session. No new AI session or paid API is launched by the CLI. A Claude/Codex interaction can still consume your subscription allowance and is not a technical guarantee against paid credits.
+The agent selects the highest-priority eligible Ready issue, checks safety and starts work in the *current* session without requesting a redundant start confirmation. This invocation authorizes only one safe task claim and branch preparation; destructive actions, paid services and independently permission-gated Git operations still require approval. No new AI session or paid API is launched by the CLI. A Claude/Codex interaction can still consume your subscription allowance and is not a technical guarantee against paid credits.
 
 For installation and the complete CLI reference, continue with the sections below.
 
