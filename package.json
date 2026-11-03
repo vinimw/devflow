@@ -1,6 +1,6 @@
 {
   "name": "@vinimw/devflow",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "private": true,
   "type": "module",
   "description": "Reusable GitHub Flow and AI-agent project initializer",
@@ -11,7 +11,7 @@
     "node": ">=20"
   },
   "scripts": {
-    "check": "node --check bin/devflow.mjs && node --check src/cli.mjs && node --check src/project-v2.mjs",
+    "check": "node --check bin/devflow.mjs && node --check src/cli.mjs && node --check src/project-v2.mjs && node --check src/tasks.mjs",
     "test": "node --test tests/*.test.mjs"
   }
 }

@@ -58,6 +58,21 @@ node bin/devflow.mjs github sync --cwd /path/to/project --issue 123 --apply
 
 The new setup commands are dry-run-first and do not reconfigure active boards. Review [Projects V2 setup](docs/PROJECTS_V2.md), including required GitHub CLI permissions and live-integration limitations.
 
+## Task lifecycle (v0.4)
+
+DevFlow now supports safe, dry-run-first task creation, priority-ordered Ready selection, task branch preparation, draft PR creation, review transition and verified merge completion:
+
+```bash
+node bin/devflow.mjs task create --title 'feat(web): add plant cards' --body-file task.md --priority P1 --area web --type feature --apply
+node bin/devflow.mjs task next --issue 123 --apply
+node bin/devflow.mjs task branch --issue 123 --apply
+node bin/devflow.mjs task pr --issue 123 --apply
+node bin/devflow.mjs task review --issue 123 --pr 45 --apply
+node bin/devflow.mjs task complete --issue 123 --pr 45 --apply
+```
+
+Each command can be previewed without `--apply`. Code implementation, tests, commits, push, PR approval and merge remain deliberate separate steps. See [task lifecycle and safety requirements](docs/TASK_LIFECYCLE.md).
+
 ## Set up a project
 
 1. Copy `templates/project/devflow.yaml` to `.devflow.yaml` in the target repository; replace all placeholder values.
@@ -70,7 +85,7 @@ Default statuses: **Backlog → Ready → In progress → In review → Done**. 
 
 ## What this release does and does not do
 
-**v0.3** provides a skill, templates, project initialization CLI, Project V2 board setup and individual issue sync. It does not yet install GitHub Actions task lifecycle automation, implement automatic task picking or provide an autonomous agent daemon. GitHub writes require appropriate access and tools. Autonomous merge is **disabled by default** and requires a separate approved implementation, protections and validation.
+**v0.4** provides a skill, templates, project initialization, Project V2 setup/sync and an operator-driven task lifecycle CLI. It does not yet install full GitHub Actions task lifecycle automation, implement AI code generation, or provide an autonomous agent daemon. GitHub writes require appropriate access and tools. Autonomous merge is **disabled by default** and requires a separate approved implementation, protections and validation.
 
 ### Cost and credentials
 
