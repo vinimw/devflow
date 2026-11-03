@@ -31,7 +31,12 @@ function mock({status=VALID,project=4,issues=[]}={}) {
     if(key==='issue view')return {number:9,url:'https://github.com/example/myapp/issues/9',
       title:'feat(web): welcome screen',body:taskBody(),state:'OPEN',
       labels:[{name:'priority:P1'},{name:'project:web'},{name:'type:feature'}],createdAt:'2026-01-01T00:00:00Z'};
-    if(key==='project item-edit')return '';
+    if(key==='project item-edit'){
+      const optionId=args[args.indexOf('--single-select-option-id')+1];
+      const target=issues.find(item=>item.id===args[args.indexOf('--id')+1]);
+      if (target) target.status=options.find(option=>option.id===optionId)?.name ?? target.status;
+      return '';
+    }
     if(key==='api graphql'){
       const parsed=JSON.parse(extra.input);
       if(parsed.query.startsWith('query('))return {data:{node:{id:'F_1',name:'Status',options}}};
