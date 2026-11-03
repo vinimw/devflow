@@ -1,3 +1,4 @@
+import { projectMain } from './project-v2.mjs';
 import { existsSync, readFileSync, writeFileSync, mkdirSync, copyFileSync } from 'node:fs';
 import { join, resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -156,9 +157,15 @@ function help() {
   log('  devflow doctor [--cwd DIR] [--json]');
   log('  devflow github plan [--cwd DIR]');
   log('  devflow github setup [--cwd DIR] --apply     # create missing labels only');
-  log('All mutating commands require --apply. No Project V2 fields, issues, PRs or merges are changed.');
+  log('  devflow github project plan [--cwd DIR]');
+  log('  devflow github project setup [--cwd DIR] --apply');
+  log('  devflow github sync --issue N [--cwd DIR] [--apply]');
+  log('Project V2 setup and issue sync require explicit --apply; existing statuses are preserved.');
 }
 export async function main(argv) {
+  if (argv[0] === 'github' && (argv[1] === 'project' || argv[1] === 'sync')) {
+    return projectMain(argv[1] === 'project' ? argv.slice(2) : ['sync', ...argv.slice(2)]);
+  }
   const { command, subcommand, opts } = parseArgs(argv);
   if (command === 'init') return init(opts);
   if (command === 'doctor') return doctor(opts);

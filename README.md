@@ -45,6 +45,19 @@ node bin/devflow.mjs github setup --cwd /path/to/project --apply
 
 Existing files are preserved unless both `--apply` and `--force` are given. GitHub setup only creates missing **labels**; Project V2 boards and status fields are not provisioned yet. See [CLI commands and limitations](docs/CLI.md).
 
+## GitHub Projects V2 (v0.3)
+
+The CLI can now safely discover, create or reuse a GitHub Project V2, configure the five DevFlow Status choices on **new** boards, and attach an existing issue to Backlog while preserving statuses on existing items:
+
+```bash
+node bin/devflow.mjs github project plan --cwd /path/to/project
+node bin/devflow.mjs github project setup --cwd /path/to/project --apply
+node bin/devflow.mjs github sync --cwd /path/to/project --issue 123
+node bin/devflow.mjs github sync --cwd /path/to/project --issue 123 --apply
+```
+
+The new setup commands are dry-run-first and do not reconfigure active boards. Review [Projects V2 setup](docs/PROJECTS_V2.md), including required GitHub CLI permissions and live-integration limitations.
+
 ## Set up a project
 
 1. Copy `templates/project/devflow.yaml` to `.devflow.yaml` in the target repository; replace all placeholder values.
@@ -57,7 +70,7 @@ Default statuses: **Backlog → Ready → In progress → In review → Done**. 
 
 ## What this release does and does not do
 
-**v0.2** provides a skill, starter templates, and a local project initialization CLI. It does not yet provision GitHub Projects V2 boards/status fields or provide an autonomous agent daemon. GitHub writes require appropriate access and tools. Autonomous merge is **disabled by default** and requires a separate approved implementation, protections and validation.
+**v0.3** provides a skill, templates, project initialization CLI, Project V2 board setup and individual issue sync. It does not yet install GitHub Actions task lifecycle automation, implement automatic task picking or provide an autonomous agent daemon. GitHub writes require appropriate access and tools. Autonomous merge is **disabled by default** and requires a separate approved implementation, protections and validation.
 
 ### Cost and credentials
 
