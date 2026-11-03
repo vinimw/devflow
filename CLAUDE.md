@@ -19,3 +19,7 @@ node bin/devflow.mjs install global --apply
 The installer installs the global Claude Code skill, global Codex skill, and the CLI command, without deleting existing configurations. Verify the results. Do not run paid AI APIs or use unattended agents.
 
 After a new agent session starts, the user can open any other repository and use `/devflow config` in Claude Code or `$devflow config` in Codex.
+
+## Removing global installation safely
+
+When the user says **"desinstalar devflow global"**, follow the uninstall steps in `AGENTS.md`. Preview with `node bin/devflow.mjs uninstall global`, ask permission, then use `--apply` and verify. Keep the cloned source and all other project files.
