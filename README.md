@@ -1,5 +1,52 @@
 # DevFlow
 
-Reusable GitHub task and AI development workflow skills for Claude Code and Codex.
+Reusable AI-assisted GitHub development workflows for **Claude Code** and **OpenAI Codex**.
 
-Initial bootstrap; see the first pull request for the skill and templates.
+DevFlow packages project-independent practices tested in DeepGrow: GitHub Flow, GitHub Projects V2 task management, structured issues, priority-aware execution, Pull Requests and guarded automation.
+
+## Structure
+
+- `skills/devflow/SKILL.md`: reusable skill for AI agents
+- `skills/devflow/references/`: Git standards, task management, task execution and optional Autopilot policy
+- `templates/`: starter files for new repositories
+- `docs/ARCHITECTURE.md`: scope, limitations and roadmap
+
+## Install the skill
+
+Clone this repository, then copy the skill directory into the appropriate agent's global skills folder.
+
+For **Claude Code**:
+
+```bash
+mkdir -p ~/.claude/skills
+cp -R skills/devflow ~/.claude/skills/devflow
+```
+
+For **Codex**:
+
+```bash
+mkdir -p ~/.agents/skills
+cp -R skills/devflow ~/.agents/skills/devflow
+```
+
+If an installation already exists, review its contents before overwriting it. You can also install to the agent's project-local skills folder.
+
+## Set up a project
+
+1. Copy `templates/project/devflow.yaml` to `.devflow.yaml` in the target repository; replace all placeholder values.
+2. Adapt `templates/AGENTS.md` and `templates/CLAUDE.md`; preserve existing project-specific instructions.
+3. Configure GitHub access, including GitHub Projects V2 permissions where needed.
+4. Ask your AI agent: **"Use the DevFlow skill to audit this repository and propose the workflow setup."**
+5. Approve any changes before the agent creates issues, changes statuses or opens PRs.
+
+Default statuses: **Backlog → Ready → In progress → In review → Done**. New issues start in Backlog; only eligible Ready issues may be started. Default Git strategy is GitHub Flow with `main` and short-lived branches. Conventional Commits and validation precede PR delivery.
+
+## What this release does and does not do
+
+**v0.1** provides a skill and starter templates. It does not contain an executable GitHub Projects CLI or an autonomous agent daemon. GitHub writes require appropriate access and tools. Autonomous merge is **disabled by default** and requires a separate approved implementation, protections and validation.
+
+### Cost and credentials
+
+Subscription authentication does not guarantee that only included AI usage is consumed. If the user demands strictly no additional cost and no supported spending guard exists, autonomous execution must fail closed. Never transfer secrets, hardcoded Project IDs or Docker volumes from DeepGrow to another project.
+
+See [architecture and future work](docs/ARCHITECTURE.md).

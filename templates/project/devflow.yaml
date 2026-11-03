@@ -1,0 +1,29 @@
+# Copy as .devflow.yaml to the target repository; change every placeholder.
+project:
+  name: replace-me
+  repository: owner/repository
+  github_project_number: null
+  default_branch: main
+
+workflow:
+  statuses: [Backlog, Ready, In progress, In review, Done]
+  priorities: [P0, P1, P2, P3]
+  merge_strategy: squash
+  auto_merge: false
+  max_concurrent_tasks: 1
+
+labels:
+  areas: [web, api, shared, infra, docs]
+  types: [feature, bug, refactor, documentation, chore, infrastructure]
+
+development:
+  docker_first: true
+  unit_tests_initially: false
+  code_language: en
+  ui_locale: pt-BR
+
+autopilot:
+  enabled: false
+  dry_run: true
+  require_explicit_installation: true
+  strict_zero_extra_ai_cost: true
