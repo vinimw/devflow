@@ -47,7 +47,7 @@ function invoke(args, expectedStatus = 0) {
 try {
   console.log('1/7 Checking CLI help (offline)');
   const help = invoke(['help']);
-  assert.match(help, /DevFlow v0\.8/);
+  assert.match(help, /DevFlow v0\.9/);
   assert.match(help, /agent install/);
 
   console.log('2/7 Previewing new project scaffolding (no writes)');
