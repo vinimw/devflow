@@ -89,5 +89,5 @@ test('refuses unknown uninstall flags',()=>{
   assert.deepEqual(parseUninstallArgs(['global','--apply']),{apply:true});
   assert.deepEqual(parseUninstallArgs(['global','--skip-shell']),{skipShell:true});
   assert.throws(()=>parseUninstallArgs(['local']),/Usage/);
-  assert.throws(()=>parseUninstallArgs(['global','--force']),/Unknown uninstall option/);
+  assert.throws(()=>parseUninstallArgs(['global','--force']),/Opção de desinstalação desconhecida/);
 });

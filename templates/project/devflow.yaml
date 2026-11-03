@@ -20,7 +20,8 @@ development:
   docker_first: true
   unit_tests_initially: false
   code_language: en
-  ui_locale: pt-BR
+  response_locale: pt-BR  # Language of DevFlow agent responses (Claude Code / Codex)
+  ui_locale: pt-BR        # Language of the application's UI, independent of agent responses
 
 autopilot:
   enabled: false

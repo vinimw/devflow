@@ -4,7 +4,7 @@
 
 DevFlow standardizes repository initialization, GitHub Projects V2 boards, structured tasks, GitHub Flow, pull requests, and agent handoffs. It is based on the workflow developed for [DeepGrow](https://github.com/vinimw/deepgrow), but its configuration is independent of any particular application.
 
-> **Current release: v0.9 (proposed).** The project consists of a portable agent skill, a local Node.js CLI, templates, documentation, automated tests, and an offline installation smoke test. **It is not a background AI agent or an autonomous coding service.**
+> **Current release: v0.10 (proposed).** The project consists of a portable agent skill, a local Node.js CLI, templates, documentation, automated tests, and an offline installation smoke test. **It is not a background AI agent or an autonomous coding service.**
 
 ## What you get
 
@@ -30,6 +30,25 @@ Backlog  →  Ready  →  In progress  →  In review  →  Done
 ```
 
 Only eligible **Ready** issues are selected. Priority order: `P0 > P1 > P2 > P3`, oldest issue first on ties. The default policy allows only one active task globally. Code, branches, and commits are in English; user-facing application language is independently configurable (such as `pt-BR`).
+
+## DevFlow response language (v0.10)
+
+**The DevFlow skill replies to users in Brazilian Portuguese (`pt-BR`) by default**, in both Claude Code and Codex: explanations, questions, plans, permissions, diagnostics and delivery summaries. This also applies to bootstrap instructions in the cloned repository before global installation.
+
+A generated `.devflow.yaml` separates agent response language from application UI locale:
+
+```yaml
+development:
+  code_language: en
+  response_locale: pt-BR  # Responses from Claude Code / Codex when using DevFlow
+  ui_locale: pt-BR        # Application UI language, independent of DevFlow messages
+```
+
+Existing repositories without `response_locale` default to `pt-BR`; no migration is needed. To change it for a particular project, set `development.response_locale: en-US` (or another requested locale). An explicit user language request in the current conversation takes precedence.
+
+**Stable English conventions:** CLI command names, flags, GitHub Project status values, Conventional Commits, branch names, source code, technical file names, machine-readable keys and GitHub issue titles are not automatically translated. Raw output from some older CLI commands or upstream GitHub errors can remain in English; the AI agent must explain it in Portuguese. The global installer and uninstaller also display their interactive previews, confirmation prompts and human-readable messages in Portuguese.
+
+---
 
 ## Safely uninstall the global installation (v0.9)
 

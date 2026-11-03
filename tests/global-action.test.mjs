@@ -57,7 +57,7 @@ test('npm script wrapper handles non-interactive stdin without accidentally appl
     input:'',encoding:'utf8',timeout:10000,
   });
   assert.equal(command.status,1);
-  assert.match(command.stdout,/No interactive terminal detected/);
+  assert.match(command.stdout,/Terminal interativo não detectado/);
   assert.equal(existsSync(join(settings.home,'.claude')),false);
 });
 test('npm script wrapper accepts explicit --yes without a terminal',t=>{
@@ -72,6 +72,6 @@ test('npm script wrapper accepts explicit --yes without a terminal',t=>{
 test('npm command parser rejects unknown modes and flags',()=>{
   assert.deepEqual(parseActionArgs(['setup','--yes']),{action:'setup',options:{yes:true}});
   assert.deepEqual(parseActionArgs(['uninstall']),{action:'uninstall',options:{}});
-  assert.throws(()=>parseActionArgs(['setup','--force']),/Unknown option/);
+  assert.throws(()=>parseActionArgs(['setup','--force']),/Opção desconhecida/);
   assert.throws(()=>parseActionArgs(['unknown']),/Usage/);
 });

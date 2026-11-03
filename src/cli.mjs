@@ -157,7 +157,7 @@ export function githubPlan(options = {}) {
   return plan;
 }
 function help() {
-  log('DevFlow v0.9 — reusable AI project workflow');
+  log('DevFlow v0.10 — fluxo de desenvolvimento com IA');
   log('  devflow uninstall global [--apply] [--skip-shell] # safely remove global install');
   log('  devflow install global [--apply] [--skip-shell]  # safe one-time Mac/Linux bootstrap');
   log('  devflow config [--cwd DIR] [--repo OWNER/REPO] [--project-number N] [--apply]');

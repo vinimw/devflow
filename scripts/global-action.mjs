@@ -4,14 +4,14 @@ import { globalInstall } from '../src/install-global.mjs';
 import { globalUninstall } from '../src/uninstall-global.mjs';
 
 const LABELS = {
-  create: 'CREATE',
-  append: 'UPDATE',
-  remove: 'REMOVE',
-  'remove-managed-block': 'UPDATE',
+  create: 'CRIAR',
+  append: 'ALTERAR',
+  remove: 'REMOVER',
+  'remove-managed-block': 'ALTERAR',
   unchanged: 'OK',
-  absent: 'ABSENT',
-  preserve: 'PRESERVE',
-  conflict: 'CONFLICT',
+  absent: 'AUSENTE',
+  preserve: 'PRESERVAR',
+  conflict: 'CONFLITO',
 };
 
 export async function runGlobalAction(action, {
@@ -25,18 +25,18 @@ export async function runGlobalAction(action, {
   const options = { ...(home ? {home} : {}), ...(shell ? {shell} : {}),
     ...(pathEnv !== undefined ? {pathEnv} : {}), skipShell };
   const preview = task(options, () => {});
-  log(action === 'setup' ? 'DevFlow global installation preview:' : 'DevFlow global removal preview:');
+  log(action === 'setup' ? 'Prévia da instalação global do DevFlow:' : 'Prévia da desinstalação global do DevFlow:');
   for (const item of preview.files) {
     log('  ' + (LABELS[item.action] ?? item.action.toUpperCase()).padEnd(8) + ' ' + item.path +
       (item.reason ? ' — ' + item.reason : ''));
   }
   if (!preview.ok) {
-    log('Cannot continue: installation targets conflict with existing files. Resolve them manually; no changes were made.');
+    log('Não foi possível continuar: existem conflitos com arquivos existentes. Revise os caminhos informados; nenhuma alteração foi realizada.');
     return { applied: false, reason: 'conflict', preview };
   }
   const changes = preview.files.some(({action})=>['create','append','remove','remove-managed-block'].includes(action));
   if (!changes) {
-    log(action === 'setup' ? 'DevFlow is already installed; nothing to change.' : 'No DevFlow-owned global installation remains.');
+    log(action === 'setup' ? 'O DevFlow já está instalado; nenhuma alteração necessária.' : 'Não há componentes globais do DevFlow para remover.');
     return { applied:false, reason:'nothing-to-do', preview };
   }
   if (!yes) {
@@ -44,20 +44,20 @@ export async function runGlobalAction(action, {
     if (confirm) {
       answer = await confirm(action);
     } else if (!stdin.isTTY || !stdout.isTTY) {
-      log('No interactive terminal detected. Nothing changed. Run in a terminal to confirm, or explicitly pass --yes (npm run ' + action + ' -- --yes).');
+      log('Terminal interativo não detectado. Nada foi alterado. Confirme em um terminal ou, após autorização explícita, utilize --yes (npm run ' + action + ' -- --yes).');
       return {applied:false,reason:'confirmation-required',preview};
     } else {
       const rl = createInterface({input:stdin,output:stdout});
       try {
         answer = await rl.question(
-          action === 'setup' ? 'Install DevFlow globally? [y/N] ' : 'Uninstall DevFlow globally? [y/N] '
+          action === 'setup' ? 'Instalar o DevFlow globalmente? [s/N] ' : 'Desinstalar o DevFlow globalmente? [s/N] '
         );
       } finally {
         rl.close();
       }
     }
     if (typeof answer === 'string' ? !/^(y|yes|s|sim)$/i.test(answer.trim()) : answer !== true) {
-      log('Cancelled. No changes were made.');
+      log('Operação cancelada. Nenhuma alteração realizada.');
       return {applied:false,reason:'cancelled',preview};
     }
   }
@@ -76,7 +76,7 @@ export function parseActionArgs(argv) {
   for (const arg of args) {
     if (arg === '--yes') options.yes=true;
     else if (arg === '--skip-shell') options.skipShell=true;
-    else throw new Error('Unknown option: '+arg);
+    else throw new Error('Opção desconhecida: '+arg);
   }
   return {action,options};
 }

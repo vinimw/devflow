@@ -7,6 +7,15 @@ description: Standardize GitHub Flow, GitHub Projects V2 tasks, Conventional Com
 
 Use DevFlow for the GitHub workflow lifecycle. Read the relevant files under `references/` **relative to this SKILL.md**.
 
+## Language policy for agent responses
+
+- **Default to Brazilian Portuguese (`pt-BR`) for all user-facing DevFlow interaction** in Claude Code and Codex: explanations, diagnostics, previews, clarifying questions, permission requests, progress reports, results, error explanations and task summaries.
+- If the target repository's `.devflow.yaml` defines `development.response_locale`, use that locale instead. If absent, use `pt-BR`. An explicit request from the user in the current conversation overrides this default.
+- This setting controls **the agent's messages to the user**, not application UI translations. `development.ui_locale` configures the application's UI and must not be treated as the agent response language.
+- Keep CLI command names, flags, file paths, GitHub Project status field values, programming identifiers, branch names, Conventional Commits and technical source files in their original required formats (English by default).
+- For raw CLI output, GitHub messages or external error logs in English, preserve the original evidence where needed and **explain its meaning and the recommended action in Portuguese**. Do not translate machine-readable JSON keys or existing issue titles.
+- Apply the language policy during installation/bootstrap, `config`, `project`, `next`, `doctor`, PR/review/delivery and other DevFlow flows.
+
 ## Install and hand off safely
 
 The v0.5 CLI can install this skill in project-local Codex/Claude Code folders and prepare read-only GitHub task handoffs. See `references/subscription-safety.md`. Never invoke an agent or API automatically. Account-side confirmation of included allowance is mandatory before interactive use, and strict zero-extra-cost cannot be attested by this skill.
@@ -36,7 +45,7 @@ These are **chat commands directed to the currently running Claude Code or Codex
 - GitHub Flow only: `main` is the default long-lived branch unless the target repository explicitly sets a different default. No `develop`.
 - Branch names: `<type>/<issue-number>-<short-kebab-description>`. Types: `feat`, `fix`, `refactor`, `docs`, `chore`.
 - Conventional Commits: `<type>(<scope>): <imperative description>`; English by default.
-- Code and Git metadata use English. User-visible UI language is configured separately via `development.ui_locale`.
+- Code and Git metadata use English. Agent responses follow `development.response_locale` (default `pt-BR`); application UI language is separately configured through `development.ui_locale`.
 - Task states: `Backlog → Ready → In progress → In review → Done`. Discover actual state names and field IDs.
 - Select only Ready issues; priorities P0 > P1 > P2 > P3, oldest first. Respect dependencies and existing work/PRs.
 - Do not promote Backlog automatically or overwrite local modifications.
