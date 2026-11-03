@@ -4,7 +4,7 @@
 
 DevFlow standardizes repository initialization, GitHub Projects V2 boards, structured tasks, GitHub Flow, pull requests, and agent handoffs. It is based on the workflow developed for [DeepGrow](https://github.com/vinimw/deepgrow), but its configuration is independent of any particular application.
 
-> **Current release: v0.6 (proposed).** The project consists of a portable agent skill, a local Node.js CLI, templates, documentation, automated tests, and an offline installation smoke test. **It is not a background AI agent or an autonomous coding service.**
+> **Current release: v0.8 (proposed).** The project consists of a portable agent skill, a local Node.js CLI, templates, documentation, automated tests, and an offline installation smoke test. **It is not a background AI agent or an autonomous coding service.**
 
 ## What you get
 
@@ -30,6 +30,92 @@ Backlog  →  Ready  →  In progress  →  In review  →  Done
 ```
 
 Only eligible **Ready** issues are selected. Priority order: `P0 > P1 > P2 > P3`, oldest issue first on ties. The default policy allows only one active task globally. Code, branches, and commits are in English; user-facing application language is independently configurable (such as `pt-BR`).
+
+## One-message global installation from a fresh clone (v0.8)
+
+**This is the simplest recommended way to get DevFlow running everywhere on your Mac.**
+
+### Step 1 — Clone this repository once
+
+```bash
+git clone https://github.com/vinimw/devflow.git ~/Documents/jobs/devflow
+```
+
+You can keep it wherever you like; no specific folder is required. The installer discovers its own checkout directory automatically.
+
+### Step 2 — Open the DevFlow clone in Claude Code or Codex
+
+Use your preferred agent's normal interface to open the **DevFlow repository itself**. It reads `AGENTS.md` (Codex) or `CLAUDE.md` (Claude Code), even before the skill is globally installed.
+
+In the **agent's chat**, simply say:
+
+> instalar devflow global
+
+or:
+
+> Install DevFlow globally on this computer.
+
+The agent must inspect the repository, run a **read-only preview**, show you its intended changes, and ask for permission before touching files in your home directory. After you approve, it runs the installer and verifies the result.
+
+There is no need to manually create symlinks, decide an install directory, or duplicate the DevFlow source. **The current cloned folder is the single source of truth.**
+
+### What the agent runs internally
+
+```bash
+# Preview — no changes
+node bin/devflow.mjs install global
+
+# After your explicit approval
+node bin/devflow.mjs install global --apply
+```
+
+The installer configures:
+
+| Destination | Purpose |
+| --- | --- |
+| `~/.claude/skills/devflow` | Symlink to the cloned skill for Claude Code |
+| `~/.agents/skills/devflow` | Symlink to the same skill for Codex |
+| `~/.local/bin/devflow` | Executable launcher to the cloned CLI |
+| `~/.zshrc` or `~/.bashrc` | Adds `~/.local/bin` to `PATH` if necessary and supported |
+
+**No manual updates to existing installations:** if any target contains different files, directories, or an unrelated symlink, installation stops and explains the conflict. It never removes an existing directory or overwrites user configuration. You can rerun the installer safely after a successful setup.
+
+If the installer cannot identify a supported shell, it leaves the shell profile untouched and prints the remaining PATH requirement. Optional `--skip-shell` prevents any profile changes.
+
+### Step 3 — Open any other repository
+
+For example:
+
+```text
+~/Documents/jobs/
+├── devflow/          ← single shared checkout, with AGENTS.md and CLAUDE.md
+├── new-project/      ← independent repository
+└── deepgrow/         ← independent repository
+```
+
+Open `new-project` in Claude Code or Codex and use the global skill in chat:
+
+| Claude Code | Codex | Action |
+| --- | --- | --- |
+| `/devflow config` | `$devflow config` | Verify and configure repository/Project V2 |
+| `/devflow project` | `$devflow project` | Inspect or safely repair Project V2 statuses |
+| `/devflow next` | `$devflow next` | Preview the next Ready task and request approval to begin |
+
+You can also try natural-language prompts such as `devflow config`; explicit skill invocation is more reliable.
+
+### What happens when you update DevFlow?
+
+```bash
+cd ~/Documents/jobs/devflow
+git pull --ff-only
+npm run validate
+```
+
+Both agents use the same skill symlink and CLI. Restart the terminal or agent session if PATH or skill discovery requires refreshing.
+
+**Costs:** installation and validation do not call AI providers and do not use API credits. The *interactive* conversation with Claude Code or Codex still uses its subscription allowance, which cannot be independently proven to avoid purchased credits. No unattended AI execution is enabled.
+
+---
 
 ## Chat commands inside Claude Code and Codex (v0.7)
 
