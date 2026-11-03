@@ -1,3 +1,4 @@
+import { taskMain } from './tasks.mjs';
 import { projectMain } from './project-v2.mjs';
 import { existsSync, readFileSync, writeFileSync, mkdirSync, copyFileSync } from 'node:fs';
 import { join, resolve, dirname } from 'node:path';
@@ -161,8 +162,15 @@ function help() {
   log('  devflow github project setup [--cwd DIR] --apply');
   log('  devflow github sync --issue N [--cwd DIR] [--apply]');
   log('Project V2 setup and issue sync require explicit --apply; existing statuses are preserved.');
+  log('  devflow task create --title TITLE --body-file FILE --priority P2 --area web --type feature [--apply]');
+  log('  devflow task next [--apply]');
+  log('  devflow task branch --issue N [--apply]');
+  log('  devflow task pr --issue N [--apply]   # draft PR, never pushes');
+  log('  devflow task review --issue N --pr P [--apply]');
+  log('  devflow task complete --issue N --pr P [--apply]');
 }
 export async function main(argv) {
+  if (argv[0] === 'task') return taskMain(argv.slice(1));
   if (argv[0] === 'github' && (argv[1] === 'project' || argv[1] === 'sync')) {
     return projectMain(argv[1] === 'project' ? argv.slice(2) : ['sync', ...argv.slice(2)]);
   }
