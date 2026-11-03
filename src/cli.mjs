@@ -131,7 +131,7 @@ export function githubPlan(options = {}) {
     log('DRY RUN: GitHub setup for ' + config.repo);
     log('Required labels: ' + plan.labels.map((label) => label.name).join(', '));
     log('Expected Project V2 statuses: ' + STATUS.join(' → '));
-    log('GitHub Projects V2 creation/status changes are not automated in v0.2; verify them with gh project view.');
+    log('Use devflow github project plan/setup to configure GitHub Projects V2 separately.');
     return plan;
   }
   const auth = run('gh', ['auth', 'status'], cwd);
@@ -150,11 +150,11 @@ export function githubPlan(options = {}) {
   if (config.projectNumber) {
     const p = run('gh', ['project', 'view', config.projectNumber, '--owner', config.repo.split('/')[0], '--format', 'json'], cwd);
     log(p.ok ? 'Project exists; verify its Status field options manually.' : 'WARN: cannot inspect configured Project V2: ' + p.detail);
-  } else log('WARN: configure github_project_number; Project V2 creation is not part of v0.2.');
+  } else log('WARN: configure github_project_number using devflow github project plan/setup.');
   return plan;
 }
 function help() {
-  log('DevFlow v0.2 — reusable AI project setup');
+  log('DevFlow v0.6 — reusable AI project workflow');
   log('  devflow init [--cwd DIR] [--name NAME] [--repo OWNER/REPO] [--project-number N] [--ui-locale pt-BR] [--apply] [--force]');
   log('  devflow doctor [--cwd DIR] [--json]');
   log('  devflow github plan [--cwd DIR]');
