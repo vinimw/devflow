@@ -11,6 +11,18 @@ Use DevFlow for the GitHub workflow lifecycle. Read the relevant files under `re
 
 The v0.5 CLI can install this skill in project-local Codex/Claude Code folders and prepare read-only GitHub task handoffs. See `references/subscription-safety.md`. Never invoke an agent or API automatically. Account-side confirmation of included allowance is mandatory before interactive use, and strict zero-extra-cost cannot be attested by this skill.
 
+## Short verbal commands (Claude Code and Codex)
+
+Interpret the user's exact messages below as requests to use the existing DevFlow CLI **in the current repository/session**. The skill is not an executable custom slash command: translate each phrase into the actual local CLI command, show the plan and explain what will change.
+
+- **`devflow config`**: inspect GitHub repository and Project V2 binding; ask for missing owner/repository and existing Project number, verify both connections, then request permission to save `.devflow.yaml`. Run `devflow config` in a terminal, or invoke `node /path/to/devflow/bin/devflow.mjs config --cwd <target>` when the CLI is not linked.
+- **`devflow project`**: inspect the configured Project V2 Status field. Present differences and request explicit authorization before using `devflow project --apply` to repair safe known defaults. Unknown or ambiguous statuses require manual review.
+- **`devflow next`**: preview the highest-priority eligible Ready issue, dependencies and WIP. After user approval, run `devflow next --apply` to claim and prepare a branch, then continue implementation **using this same current agent session**. Do not spawn a second agent or pay-as-you-go API call.
+- **`devflow doctor`**: report setup, GitHub credentials and local environment checks with no mutation.
+- **`devflow task pr --issue N`**, **`devflow task review --issue N --pr P`**, **`devflow task complete --issue N --pr P`**: inspect the state, then apply only after permission and necessary checks; never auto-merge.
+
+For Codex and Claude Code prompts, the user can type these phrases normally. Do not claim that Claude Code/Codex has registered a native slash command unless one was actually installed. If the terminal is not interactive, ask the user for the missing configuration inputs and pass them as CLI options rather than guessing. Never hide GitHub writes: require explicit approval before applying any change. All provider usage must remain within the interactive user-controlled session, subject to `references/subscription-safety.md`.
+
 ## Before acting
 
 1. Inspect the target repository and read its `AGENTS.md`, `CLAUDE.md`, `.devflow.yaml` and architecture/task docs when available.
