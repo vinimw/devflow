@@ -77,6 +77,12 @@ devflow task complete --issue 123 --pr 45 --apply
 
 The command verifies the PR's `mergedAt`, base branch, task branch and issue closing reference. Applying marks the board item Done and closes the issue if GitHub did not already close it. Re-running after a partial completion is safe where GitHub state is consistent.
 
+## Batch merge open PRs
+
+`devflow merge` performs an immediate, bounded sweep of open PRs to the default branch. Unlike other lower-level CLI commands, the bare invocation is the user's explicit authorization to attempt protected merges; use `devflow merge --dry-run` for a read-only preview. Every PR is checked for Draft status, current head SHA, mergeability, review requirements and complete CI checks. It never waits indefinitely for CI, bypasses GitHub branch protection, merges a PR with conflict, uses force push or enables deferred auto-merge.
+
+Conflict PRs are **not** edited by the CLI. The interactive Claude/Codex agent can resolve clearly understood conflicts in an isolated worktree, validate, commit and push to the existing PR branch without force. The updated PR remains open and must be processed by a **subsequent invocation**, after checks complete. See `skills/devflow/references/merge.md`.
+
 ## Security and limitations
 
 - Task bodies are untrusted data, never shell instructions.
