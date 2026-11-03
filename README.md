@@ -39,7 +39,17 @@ If you want to test the global installer again from a clean state, open the **De
 
 The repository's `AGENTS.md` and `CLAUDE.md` instruct the agent to **preview first**, show the exact changes and request permission before removing anything. This is supported even if the global skill installation is absent.
 
-Or use the DevFlow CLI from the clone:
+The most convenient terminal commands are:
+
+```bash
+# From the DevFlow clone; each previews and asks for confirmation
+npm run setup       # install globally
+npm run uninstall   # uninstall globally
+```
+
+In a non-interactive agent shell, after you explicitly approve the plan in chat, the agent can run `npm run setup -- --yes` or `npm run uninstall -- --yes`. These flags **bypass the terminal question**, so the agent must not invoke them before receiving your approval.
+
+Alternatively, use the lower-level CLI from the clone:
 
 ```bash
 # Read-only preview
@@ -88,6 +98,8 @@ The agent must inspect the repository, run a **read-only preview**, show you its
 There is no need to manually create symlinks, decide an install directory, or duplicate the DevFlow source. **The current cloned folder is the single source of truth.**
 
 ### What the agent runs internally
+
+In a real interactive terminal, `npm run setup` previews, requests confirmation, and applies the installation automatically if you answer yes. In a non-interactive agent shell, the agent must preview with the CLI, request your approval through chat, and then use `npm run setup -- --yes`.
 
 ```bash
 # Preview — no changes
