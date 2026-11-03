@@ -27,13 +27,13 @@ function installedRunner() {
 function linkInfo(path, expected) {
   const current = stat(path);
   if (!current) return {path,kind:'link',action:'absent'};
-  if (!current.isSymbolicLink()) return {path,kind:'link',action:'preserve',reason:'This is a real file/directory, not a DevFlow installer link'};
+  if (!current.isSymbolicLink()) return {path,kind:'link',action:'preserve',reason:'É um arquivo ou diretório real, não um link criado pelo DevFlow'};
   try {
     if (realpathSync(path) === realpathSync(expected)) return {path,kind:'link',action:'remove'};
   } catch {
     // Do not remove unknown/broken links based on their names.
   }
-  return {path,kind:'link',action:'preserve',reason:'The link does not resolve to this DevFlow checkout'};
+  return {path,kind:'link',action:'preserve',reason:'O link não aponta para este repositório local do DevFlow'};
 }
 function binInfo(path) {
   const current = stat(path);
@@ -42,22 +42,22 @@ function binInfo(path) {
     try {
       if (realpathSync(path) === realpathSync(entry)) return {path,kind:'bin',action:'remove'};
     } catch {}
-    return {path,kind:'bin',action:'preserve',reason:'CLI symlink points to another target'};
+    return {path,kind:'bin',action:'preserve',reason:'O link da CLI aponta para outro destino'};
   }
   if (current.isFile() && readFileSync(path,'utf8') === installedRunner()) {
     return {path,kind:'bin',action:'remove'};
   }
-  return {path,kind:'bin',action:'preserve',reason:'CLI file is not the unmodified DevFlow-generated launcher'};
+  return {path,kind:'bin',action:'preserve',reason:'O executável da CLI foi modificado ou não foi criado pelo DevFlow'};
 }
 function profileInfo(path) {
   const current = stat(path);
   if (!current) return {path,kind:'profile',action:'absent'};
-  if (!current.isFile()) return {path,kind:'profile',action:'preserve',reason:'Profile is not a regular file'};
+  if (!current.isFile()) return {path,kind:'profile',action:'preserve',reason:'O perfil do terminal não é um arquivo comum'};
   const data = readFileSync(path,'utf8');
   const start = data.indexOf(OWNED_BLOCK);
-  if (start === -1) return {path,kind:'profile',action:'preserve',reason:'No exact DevFlow-managed PATH block'};
+  if (start === -1) return {path,kind:'profile',action:'preserve',reason:'Não foi encontrado um trecho de PATH gerenciado pelo DevFlow'};
   if (data.indexOf(OWNED_BLOCK,start+OWNED_BLOCK.length) !== -1) {
-    return {path,kind:'profile',action:'preserve',reason:'Multiple DevFlow PATH blocks require manual review'};
+    return {path,kind:'profile',action:'preserve',reason:'Existem vários trechos de PATH do DevFlow; revise manualmente'};
   }
   return {path,kind:'profile',action:'remove-managed-block',before:data};
 }
@@ -73,7 +73,7 @@ function profiles(home) {
  */
 export function globalUninstall({home=homedir(),apply=false,skipShell=false}={},output=console.log) {
   const base=resolve(home);
-  if (!stat(base)?.isDirectory()) throw new Error('Home directory is missing: '+base);
+  if (!stat(base)?.isDirectory()) throw new Error('Diretório pessoal não encontrado: '+base);
   const items=[
     linkInfo(join(base,'.claude','skills','devflow'),skill),
     linkInfo(join(base,'.agents','skills','devflow'),skill),
@@ -91,12 +91,12 @@ export function globalUninstall({home=homedir(),apply=false,skipShell=false}={},
         const fresh=item.kind==='link'
           ? linkInfo(item.path,skill)
           : binInfo(item.path);
-        if (fresh.action!=='remove') throw new Error('Target changed during uninstall: '+item.path);
+        if (fresh.action!=='remove') throw new Error('O destino foi alterado durante a desinstalação: '+item.path);
         unlinkSync(item.path);
       } else if (item.action==='remove-managed-block') {
         const fresh=profileInfo(item.path);
         if (fresh.action!=='remove-managed-block' || fresh.before!==item.before) {
-          throw new Error('Shell profile changed during uninstall: '+item.path);
+          throw new Error('O perfil do terminal foi alterado durante a desinstalação: '+item.path);
         }
         let after=item.before.replace(OWNED_BLOCK,'');
         // Also remove the isolated separator line added by our installer, but
@@ -110,8 +110,8 @@ export function globalUninstall({home=homedir(),apply=false,skipShell=false}={},
     }
   }
   result.message=apply
-    ? 'DevFlow-owned global entries removed where verified. The cloned repository and other project files were preserved. Restart any open agent/terminal sessions.'
-    : 'Preview only. Run devflow uninstall global --apply after reviewing the targets.';
+    ? 'Os componentes globais identificados como pertencentes ao DevFlow foram removidos. O repositório clonado e os demais projetos foram preservados. Reinicie as sessões abertas do agente ou terminal.'
+    : 'Apenas prévia. Revise os destinos e execute devflow uninstall global --apply para remover.';
   output?.(result);
   return result;
 }
@@ -123,9 +123,9 @@ export function parseUninstallArgs(argv) {
     if(args[i]==='--apply')options.apply=true;
     else if(args[i]==='--skip-shell')options.skipShell=true;
     else if(args[i]==='--home'){
-      const value=args[++i];if(!value || value.startsWith('--'))throw new Error('Missing --home directory');
+      const value=args[++i];if(!value || value.startsWith('--'))throw new Error('Informe o diretório após --home');
       options.home=value;
-    }else throw new Error('Unknown uninstall option: '+args[i]);
+    }else throw new Error('Opção de desinstalação desconhecida: '+args[i]);
   }
   return options;
 }
